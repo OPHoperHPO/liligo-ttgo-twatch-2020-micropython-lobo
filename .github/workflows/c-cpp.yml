@@ -9,7 +9,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup
-      run: sudo apt-get install git wget make libncurses-dev flex bison gperf python3 python3-serial
+      run: |
+        git submodule init
+        sudo apt-get install git wget make libncurses-dev flex bison gperf python3 python3-serial
     - name: Build
       run: cd MicroPython_BUILD && ./BUILD.sh -j4 -v -f16 --appsize 2400 all
     - name: Generate firmware package
