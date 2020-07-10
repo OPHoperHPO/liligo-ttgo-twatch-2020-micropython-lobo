@@ -23,3 +23,18 @@ jobs:
       with:
         name: firmware
         path: MicroPython_BUILD/build/firmware.zip
+    - name: Get Commit Message and release it
+      run: |
+          MSG=$(git log --format=%B -n 1 ${{ github.event.after }})
+          echo "::set-env name=COMMIT_MESSAGE::${MSG}":  
+    - name: Create Pre-Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Pre-Release ${{ github.ref }}
+        body: $COMMIT_MESSAGE
+        draft: false
+        prerelease: true
