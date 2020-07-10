@@ -10,8 +10,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup
       run: |
-        git submodule init
-        git submodule update
+        git submodule update --init --recursive
         sudo apt-get install git wget make libncurses-dev flex bison gperf python3 python3-serial
     - name: Build
       run: cd MicroPython_BUILD && ./BUILD.sh -j4 -v -f16 --appsize 2400 all
