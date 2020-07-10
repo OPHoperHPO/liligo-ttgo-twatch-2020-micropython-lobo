@@ -321,7 +321,7 @@ ifdef CONFIG_MICROPY_USE_LVGL
 LVGL_BINDING_DIR = $(TOP)/esp32/libs/lvgl/lv_binding
 LVGL_DIR = $(LVGL_BINDING_DIR)/lvgl
 INC += -I $(LVGL_DIR)
-ALL_LVGL_SRC = $(shell find $(LVGL_DIR) -type f)  $(LVGL_BINDING_DIR)/lv_conf.h
+ALL_LVGL_SRC = $(shell find $(LVGL_DIR) -type f)  $(LVGL_BINDING_DIR)/lv_conf.h $(LVGL_BINDING_DIR)/include/lv_mp_mem_custom_include.h
 QSTR_GLOBAL_DEPENDENCIES += $(LVGL_MPY)
 
 LVGL_MPY = $(BUILD)/lvgl/lv_mpy.c
