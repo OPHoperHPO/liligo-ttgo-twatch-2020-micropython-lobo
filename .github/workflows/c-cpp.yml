@@ -1,0 +1,22 @@
+name: Build firmware
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup
+      run: sudo apt-get install git wget make libncurses-dev flex bison gperf python3 python3-serial
+    - name: Build
+      run: cd MicroPython_BUILD && ./BUILD.sh -j4 -v -f16 --appsize 2400 all
+    - name: Generate firmware package
+      run: |
+        cd MicroPython_BUILD/build && cp ../partitions_mpy.csv ./ && cp ../sdkconfig ./ && zip firmware.zip bootloader/bootloader.bin phy_init_data.bin MicroPython.bin partitions_mpy.bin partitions_mpy.csv sdkconfig
+    - name: Upload firmware zip
+      uses: actions/upload-artifact@v2
+      with:
+        name: firmware
+        path: MicroPython_BUILD/build/firmware.zip
