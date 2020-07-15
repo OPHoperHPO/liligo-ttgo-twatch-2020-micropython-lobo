@@ -209,3 +209,6 @@ class HardwareConfig:
             ws = 25
             bck = 26
             dout = 33
+
+
+

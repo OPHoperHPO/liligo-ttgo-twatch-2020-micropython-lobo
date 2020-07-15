@@ -40,26 +40,17 @@ FT5X0X_VENDID = 0X56
 
 
 class FT5206:
-    def __init__(self, scl=None, sda=None,
-                 intr=None, address=None):
+    def __init__(self, i2c, address=None):
         self._id = [0]*2
         self._y = [0]*2
         self._x = [0]*2
         self.__touches__=0
-        self.scl = scl if scl is not None else 32
-        self.sda = sda if sda is not None else 23
-        self.intr = intr if intr is not None else 38
         self._chip_id = 0xFF
         self.address = address if address else FT5206_SLAVE_ADDRESS
 
         self.buffer = bytearray(16)
         self.bytebuf = self.buffer
-
-        self.pin_sda = Pin(self.sda)
-        self.pin_intr = Pin(self.intr, mode=Pin.IN)
-        self.pin_scl = Pin(self.scl)
-        self.bus = I2C(scl=self.pin_scl,
-                       sda=self.pin_sda)
+        self.bus = i2c
         self.init_device()
 
     def init_device(self):
