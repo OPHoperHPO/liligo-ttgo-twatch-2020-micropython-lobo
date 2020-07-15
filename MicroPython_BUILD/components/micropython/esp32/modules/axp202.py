@@ -28,7 +28,7 @@ Updated by Anodev https://github.com/OPHoperHPO
 '''
 
 import time
-import micropython
+from machine import Pin, I2C
 from ustruct import unpack
 from axp_constants import *
 
@@ -76,7 +76,7 @@ class PMU(object):
 
         self._outputReg = None
         self.buffer = bytearray(16)
-        self.bytebuf = memoryview(self.buffer[0:1])
+        self.bytebuf = self.buffer
         self.wordbuf = memoryview(self.buffer[0:2])
         self._irq = memoryview(self.buffer[0:5])
 
