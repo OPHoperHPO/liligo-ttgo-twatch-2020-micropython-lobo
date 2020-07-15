@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Setup
+    - name: Setup env
       run: |
         git submodule update --init --recursive
         cp -r MicroPython_BUILD/components/micropython/esp32/libs/lvgl/lv_binding/include MicroPython_BUILD/components/micropython/esp32/libs/lvgl/lv_binding/lvgl/src/lv_misc
