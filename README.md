@@ -1,7 +1,7 @@
 
 # MicroPython for LilyGO TTGO T-Watch-2020 ![Build firmware](https://github.com/OPHoperHPO/lilygo-ttgo-twatch-2020-micropython-lobo/workflows/Build%20firmware/badge.svg)
 ### While under development!
-
+*
 
 
 This is a branch from Lobo fork, I added it to Twatch's hardware driver and the `lvgl` graphics library, thanks to Lobo's clean project (than the official).
