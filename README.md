@@ -7,7 +7,7 @@ This is a branch from Lobo fork, I added it to Twatch's hardware driver and the 
 - PCF8563 Real-time clock/calendar driver
 - BMA423 Low-g acceleration sensor driver
 - LVGL popular embedded graphics library
-- FT5x/6x touch screen driver (Updated to latest)
+- FT5x/6x touch screen driver (Updated to latest) Use ft5206.FT5206 instead of TouchScreen module
 - AXP202 advanced multi-channel power management chip driver (Updated to latest)
 
 ### The following examples have all been tested in T-Watch.
@@ -49,14 +49,13 @@ while True:
 #### FT5x/6x touchscreen example
 ```
 import machine
-import touchscreen as ts
+import ft5206
 import time
 
 i2c = machine.I2C(scl=32, sda=23, speed=400000)
-
-ts.init(i2c)
+ts = ft5206.FT5206(i2c)
 while True:
-  ts.read()
+  ts.get_point()
   time.sleep(0.2);
 ```
 
