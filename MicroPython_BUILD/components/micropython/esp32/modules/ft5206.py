@@ -74,8 +74,8 @@ class FT5206:
         touch = self.touched()
         if touch != 0:
             point = self.get_point()
-            data.point.x = 235 - point[0]
-            data.point.y = 235 - point[1]
+            data.point.x = 235 - point[0]  # Инвертируем тачскрин
+            data.point.y = 235 - point[1]  # Инвертируем тачскрин
             data.state = 1
         else:
             data.state = 0

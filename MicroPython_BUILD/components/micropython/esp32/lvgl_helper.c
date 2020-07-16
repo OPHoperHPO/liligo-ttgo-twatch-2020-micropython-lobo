@@ -65,8 +65,8 @@ STATIC bool touch_read(lv_indev_drv_t *indev_drv, lv_indev_data_t *data)
     static touch_info_t ifo;
     iot_ft5x06_touch_report(ft5x06_handle, &ifo);
     if (ifo.touch_event != TOUCH_EVT_RELEASE) {
-        data->point.x =  ifo.curx[0];
-        data->point.y =  ifo.cury[0];
+        data->point.x =  235 - ifo.curx[0];
+        data->point.y =  235 - ifo.cury[0];
         data->state = LV_INDEV_STATE_PR ;
     } else {
         data->state = LV_INDEV_STATE_REL;
