@@ -84,16 +84,17 @@ class Display:
 class Motor:
     def __init__(self):
         self.pwm = PWM(4, freq=1000, duty=0)
-        self.strength = 1
 
     def on(self):
         self.pwm.resume()
-        self.pwm.duty(self.strength)
+        self.pwm.duty(5)
 
     def off(self):
         self.pwm.duty(0)
         self.pwm.pause()
 
     def set_strength(self, strength):
-        self.pwm.duty(strength)
-        self.strength = strength
+        self.pwm.duty(5*strength/100)
+
+    def set_freq(self, freq):
+        self.pwm.freq(freq)
