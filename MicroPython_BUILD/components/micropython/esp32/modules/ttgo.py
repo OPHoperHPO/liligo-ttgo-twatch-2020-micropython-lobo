@@ -31,6 +31,12 @@ class TTGO:
     def __init_display__(self):
         return Display(self.pmu)
 
+    def axp_attach_interrupt(self, callback):
+        irq = Pin(35, mode=Pin.IN, handler=callback, trigger=Pin.IRQ_FALLING)
+
+    def bma_attach_interrupt(self, callback):
+        irq = Pin(39, mode=Pin.IN, handler=callback, trigger=Pin.IRQ_RISING)
+
     def rtc_attach_interrupt(self, rtc_callback):
         Pin(37, mode=Pin.IN, handler=rtc_callback, trigger=Pin.IRQ_FALLING)
 
