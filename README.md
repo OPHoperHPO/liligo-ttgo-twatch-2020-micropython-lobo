@@ -148,7 +148,7 @@ import lvesp32
 import display
 import time
 import machine
-import touchscreen as ts
+import ft5206
 import axp202
 import random
 
@@ -159,7 +159,7 @@ pmu.setLDO2Voltage(3300)
 tft = display.TFT()
 
 i2c = machine.I2C(id=1, scl=32, sda=23, speed=400000)
-ts.init(i2c)
+ts = ft5206.FT5206(i2c)
 
 tft.init(tft.ST7789,width=240, invrot=3,rot=1,bgr=False, height=240, miso=2, mosi=19, clk=18, cs=5, dc=27,speed=40000000,color_bits=tft.COLOR_BITS16,backl_pin=12,backl_on=1)
 
@@ -178,16 +178,16 @@ lv.disp_drv_register(disp_drv)
 indev_drv = lv.indev_drv_t()
 lv.indev_drv_init(indev_drv) 
 indev_drv.type = lv.INDEV_TYPE.POINTER
-indev_drv.read_cb = lv_h.read
+indev_drv.read_cb = ts.lvgl_touch_read
 lv.indev_drv_register(indev_drv)
 
 scr = lv.obj()
 btn = lv.btn(scr)
+btn.set_drag(True)
 btn.align(lv.scr_act(), lv.ALIGN.CENTER, 0, 0)
 label = lv.label(btn)
 label.set_text("Button")
 lv.scr_load(scr)
-
 ```
 
 Examples can be found in the `modules_examples` directory.
