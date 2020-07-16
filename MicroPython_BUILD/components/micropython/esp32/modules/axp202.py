@@ -551,7 +551,7 @@ class PMU(object):
         val = (mv - 1800) / 100
         prev = self.read_byte(AXP202_LDO24OUT_VOL)
         prev &= 0x0F
-        prev = prev | (int(val) << 4)
+        prev |= int(val) << 4
         self.write_byte(AXP202_LDO24OUT_VOL, int(prev))
         return AXP_PASS
 
@@ -576,7 +576,7 @@ class PMU(object):
             val = (mv - 700) / 25
             prev = self.read_byte(AXP202_LDO3OUT_VOL)
             prev &= 0x80
-            prev = prev | int(val)
+            prev |= int(val)
             self.write_byte(AXP202_LDO3OUT_VOL, int(prev))
             return AXP_PASS
             # self.write_byte(AXP202_LDO3OUT_VOL, int(val))
@@ -584,7 +584,7 @@ class PMU(object):
             val = (mv - 1800) / 100
             prev = self.read_byte(AXP192_LDO23OUT_VOL)
             prev &= 0xF0
-            prev = prev | int(val)
+            prev |= int(val)
             self.write_byte(AXP192_LDO23OUT_VOL, int(prev))
 
     def getLDO3Voltage(self):
