@@ -125,9 +125,9 @@ uint32_t tp_caly = 0;
 
 dispWin_t dispWin = {
   .x1 = 0,
-  .y1 = 80,
-  .x2 = 240,
-  .y2 = 320,
+  .y1 = 0,
+  .x2 = DEFAULT_TFT_DISPLAY_WIDTH,
+  .y2 = DEFAULT_TFT_DISPLAY_HEIGHT,
 };
 
 Font cfont = {
