@@ -89,7 +89,8 @@ class Display:
         tft = display.TFT()
         tft.init(tft.ST7789, width=240, invrot=3,
                  rot=1, bgr=False, height=240, miso=2, mosi=19, clk=18, cs=5, dc=27,
-                 speed=40000000, color_bits=tft.COLOR_BITS16, backl_pin=12, backl_on=1)
+                 speed=40000000, color_bits=tft.COLOR_BITS16, backl_pin=12, backl_on=1, splash= False)
+        self.tft.tft_writecmd(0x21)  # Invert colors
         self.tft = tft
         self.pmu = pmu
         self.set_backlight_level(0)  # Turn backlight off
