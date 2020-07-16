@@ -457,7 +457,8 @@ class PMU(object):
         if self._chip_id == AXP202_CHIP_ID:
             for i in range(5):
                 self.write_byte(AXP202_INTSTS1 + i, 0xFF)
-                self._irq[i] = 0
+        for i in range(len(self._irq)):
+            self._irq[i] = 0
 
     def isAcinOverVoltageIRQ(self):
         return bool(self._irq[0] & BIT_MASK(7))
@@ -925,43 +926,3 @@ class PMU(object):
         val |= int((mA / 100))
         self.write_byte(AXP202_CHARGE1, val)
         return AXP_PASS
-
-    def __thread_IRQ_update__(self):
-        ntf = _thread.getnotification()
-        if ntf:
-            # some notification received
-            if ntf == _thread.EXIT:
-                # -------------------------------------------------
-                # Return from thread function terminates the thread
-                # -------------------------------------------------
-                #print("TH_FUNC: terminated")
-                return
-            elif ntf == _thread.SUSPEND:
-                # -------------------------------------------------------------------
-                # The thread can be suspended using _thread.suspend(th_id) function,
-                # but sometimes it is more convenient to implement the "soft" suspend
-                # -------------------------------------------------------------------
-                #print("TH_FUNC: suspended")
-                # wait for RESUME notification indefinitely, some other thread must
-                # send the resume notification: _thread.notify(th_id, _thread.RESUME)
-                while _thread.wait() != _thread.RESUME:
-                    pass
-        self.readIRQ()
-        time.sleep(1.5)
-        self.clearIRQ()
-
-
-    def start_read_irq_thread(self):
-        self.threadIRQupdate = _thread.start_new_thread("AXP202_update_irq", self.__thread_IRQ_update__, ())
-
-    def stop_read_irq_thread(self):
-        if self.threadIRQupdate:
-            _thread.stop(self.threadIRQupdate)
-
-    def suspend_read_irq_thread(self):
-        if self.threadIRQupdate:
-            _thread.suspend(self.threadIRQupdate)
-
-    def resume_read_irq_thread(self):
-        if self.threadIRQupdate:
-            _thread.resume(self.threadIRQupdate)
