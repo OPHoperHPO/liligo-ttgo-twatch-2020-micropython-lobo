@@ -124,7 +124,7 @@ class Display:
     def set_backlight_level(self, percent):
         if 0 <= percent <= 100:
             voltage = 800 * percent / 100
-            self.pmu.set_lcd_backlight_voltage(2400 + voltage)
+            self.__set_lcd_backlight_voltage__(2400 + voltage)
 
     def display_off(self):
         self.tft.tft_writecmd(0x10)
@@ -137,7 +137,21 @@ class Display:
 
     def backlight(self, val):
         self.tft.backlight(val)
-        self.pmu.turn_lcd_backlight(val)
+        self.__turn_lcd_backlight__(val)
+
+    def __turn_lcd_backlight__(self, val):
+        if val == 1:
+            self.pmu.enablePower(axp202.AXP202_LDO2)
+        else:
+            self.pmu.disablePower(axp202.AXP202_LDO2)
+
+    def __set_lcd_backlight_voltage__(self, voltage=3200):
+        if voltage >= 3200:
+            self.pmu.setLDO2Voltage(3200)
+        elif voltage <= 2400:
+            self.pmu.setLDO2Voltage(2400)
+        else:
+            self.pmu.setLDO2Voltage(voltage)
 
     def __rgb_tuple2rgb_int__(self, rgb_tuple):
         return rgb_tuple[0] << 16 | rgb_tuple[1] << 8 | rgb_tuple[2]
