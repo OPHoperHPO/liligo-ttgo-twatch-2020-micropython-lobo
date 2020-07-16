@@ -65,6 +65,22 @@ class FT5206:
                 self._chip_id = CST026_VENDID
         return True
 
+    def lvgl_touch_read(self, indev_drv, data):
+        """
+        Функция для считывания нажатия lvgl
+        :param indev_drv: lv_indev_drv_t
+        :param data: lv_indev_data_t
+        """
+        touch = self.touched()
+        if touch != 0:
+            point = self.get_point()
+            data.point.x = point[0]
+            data.point.y = point[1]
+            data.state = 1
+        else:
+            data.state = 0
+        return False
+
     def write_byte(self, reg, val):
         """
         Записывает байт в регистр
