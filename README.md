@@ -1,17 +1,14 @@
 
 # MicroPython for LilyGO TTGO T-Watch-2020 ![Build firmware](https://github.com/OPHoperHPO/lilygo-ttgo-twatch-2020-micropython-lobo/workflows/Build%20firmware/badge.svg)
 ### While under development!
-*
-
-
 This is a branch from Lobo fork, I added it to Twatch's hardware driver and the `lvgl` graphics library, thanks to Lobo's clean project (than the official).
 
 ## Add the following drivers
 - PCF8563 Real-time clock/calendar driver
 - BMA423 Low-g acceleration sensor driver
 - LVGL popular embedded graphics library
-- FT5x/6x touch screen driver
-- AXP202 advanced multi-channel power management chip driver
+- FT5x/6x touch screen driver (Updated to latest)
+- AXP202 advanced multi-channel power management chip driver (Updated to latest)
 
 ### The following examples have all been tested in T-Watch.
 
