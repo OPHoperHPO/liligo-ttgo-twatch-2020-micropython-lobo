@@ -28,7 +28,6 @@ Updated by Anodev https://github.com/OPHoperHPO
 '''
 
 import time
-from machine import Pin, I2C
 from ustruct import unpack
 from axp_constants import *
 
@@ -65,12 +64,8 @@ class PMU(object):
         0b01000000,
         0b01100000]
 
-    def __init__(self, scl=None, sda=None,
-                 intr=None, address=None):
+    def __init__(self, i2c, address=None):
         self.device = None
-        self.scl = scl if scl is not None else default_pin_scl
-        self.sda = sda if sda is not None else default_pin_sda
-        self.intr = intr if intr is not None else default_pin_intr
         self._chip_id = default_chip_type
         self.address = address if address else AXP202_SLAVE_ADDRESS
 
@@ -79,21 +74,8 @@ class PMU(object):
         self.bytebuf = self.buffer
         self.wordbuf = memoryview(self.buffer[0:2])
         self._irq = memoryview(self.buffer[0:5])
-
-        self.init_pins()
-        self.init_i2c()
+        self.bus = i2c
         self.init_device()
-
-    def init_i2c(self):
-        print('* initializing i2c')
-        self.bus = I2C(scl=self.pin_scl,
-                       sda=self.pin_sda)
-
-    def init_pins(self):
-        print('* initializing pins')
-        self.pin_sda = Pin(self.sda)
-        self.pin_scl = Pin(self.scl)
-        self.pin_intr = Pin(self.intr, mode=Pin.IN)
 
     def write_byte(self, reg, val):
         self.bytebuf[0] = val

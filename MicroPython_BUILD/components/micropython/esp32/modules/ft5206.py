@@ -5,8 +5,6 @@
 # Лицензия: MIT
 # Исходники: https://github.com/lewisxhe/FT5206_Library
 
-from machine import Pin, I2C
-
 FT5206_SLAVE_ADDRESS = 0x38
 FT5206_MODE_REG = 0x00
 FT5206_TOUCHES_REG = 0x02
@@ -41,15 +39,16 @@ FT5X0X_VENDID = 0X56
 
 class FT5206:
     def __init__(self, i2c, address=None):
-        self._id = [0]*2
-        self._y = [0]*2
-        self._x = [0]*2
-        self.__touches__=0
+        self._id = [0] * 2
+        self._y = [0] * 2
+        self._x = [0] * 2
+        self.__touches__ = 0
         self._chip_id = 0xFF
         self.address = address if address else FT5206_SLAVE_ADDRESS
 
         self.buffer = bytearray(16)
         self.bytebuf = self.buffer
+
         self.bus = i2c
         self.init_device()
 
@@ -120,10 +119,10 @@ class FT5206:
         :return: Кортеж с координатами x, y
         """
         self.__read_register__()
-        if (self.__touches__ == 0) or (num > 2) or num<1:
+        if (self.__touches__ == 0) or (num > 2) or num < 1:
             return 0, 0
         else:
-            return self._x[num-1], self._y[num-1]
+            return self._x[num - 1], self._y[num - 1]
 
     def get_touch(self, x, y):
         """
