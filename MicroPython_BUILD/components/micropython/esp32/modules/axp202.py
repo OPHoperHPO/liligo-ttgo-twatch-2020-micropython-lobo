@@ -920,6 +920,6 @@ class PMU(object):
         val = self.read_byte(AXP202_CHARGE1)
         val &= 0b11110000
         mA -= 300
-        val |= (mA / 100)
+        val |= int((mA / 100))
         self.write_byte(AXP202_CHARGE1, val)
         return AXP_PASS
