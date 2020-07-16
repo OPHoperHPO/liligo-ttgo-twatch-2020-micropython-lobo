@@ -26,6 +26,23 @@ class TTGO:
     def __init_display__(self):
         return Display(self.pmu)
 
+    def init_power(self):
+        # Change the button boot time to 4 seconds
+        self.pmu.setShutdownTime(axp202.AXP_POWER_OFF_TIME_4S)
+        # Turn off the charging instructions, there should be no
+        self.pmu.setChgLEDMode(axp202.AXP20X_LED_OFF)
+        # Turn off external enable
+        self.pmu.setPowerOutPut(axp202.AXP202_EXTEN, False)
+        # axp202 allows maximum charging current of 1800mA, minimum 300mA
+        self.pmu.setChargeControlCur(300)
+
+    def power_off(self):
+        self.pmu.setPowerOutPut(axp202.AXP202_EXTEN, False)
+        self.pmu.setPowerOutPut(axp202.AXP202_LDO4, False)
+        self.pmu.setPowerOutPut(axp202.AXP202_DCDC2, False)
+        self.pmu.setPowerOutPut(axp202.AXP202_LDO3, False)
+        self.pmu.setPowerOutPut(axp202.AXP202_LDO2, False)
+
 
 class Display:
     """Display wrapper"""
@@ -94,7 +111,7 @@ class Motor:
         self.pwm.pause()
 
     def set_strength(self, strength):
-        self.pwm.duty(5*strength/100)
+        self.pwm.duty(5 * strength / 100)
 
     def set_freq(self, freq):
         self.pwm.freq(freq)

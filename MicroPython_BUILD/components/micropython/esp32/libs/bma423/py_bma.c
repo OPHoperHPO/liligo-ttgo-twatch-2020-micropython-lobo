@@ -108,7 +108,7 @@ mp_obj_t bma_sensor_init(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_a
         mp_raise_OSError(1);
         return mp_const_none;
     }
-
+    bma423_set_remap_axes(bma_handle);
     bma423_enableAccel(bma_handle);
 
     bma423_attachInterrupt(bma_handle);

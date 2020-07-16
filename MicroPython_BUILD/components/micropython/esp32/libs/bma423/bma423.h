@@ -492,7 +492,7 @@ uint16_t bma423_feature_enable(uint8_t feature, uint8_t enable, struct bma4_dev 
  *	@retval 0 -> Success
  *	@retval Any non zero value -> Fail
  */
-uint16_t bma423_set_remap_axes(const struct bma423_axes_remap *remap_data, struct bma4_dev *dev);
+uint16_t bma423_set_remap_axes(struct bma4_dev *dev);
 
 /*!
  *	@brief This API reads the x, y and z axis remap data from the sensor.

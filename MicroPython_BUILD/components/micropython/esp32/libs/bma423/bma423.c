@@ -853,7 +853,7 @@ uint16_t bma423_feature_enable(uint8_t feature, uint8_t enable, struct bma4_dev 
 /*!
  *	@brief This API performs x, y and z axis remapping in the sensor.
  */
-uint16_t bma423_set_remap_axes(const struct bma423_axes_remap *remap_data, struct bma4_dev *dev)
+uint16_t bma423_set_remap_axes(struct bma4_dev *dev)
 {
 	uint8_t feature_config[BMA423_FEATURE_SIZE] = {0};
 	uint8_t index = BMA423_AXES_REMAP_OFFSET;
@@ -868,13 +868,13 @@ uint16_t bma423_set_remap_axes(const struct bma423_axes_remap *remap_data, struc
 		if (dev->chip_id == BMA423_CHIP_ID) {
 			rslt = bma4_read_regs(BMA4_FEATURE_CONFIG_ADDR, feature_config, BMA423_FEATURE_SIZE, dev);
 			if (rslt == BMA4_OK) {
-				x_axis = remap_data->x_axis & BMA423_X_AXIS_MASK;
-				x_axis_sign = (remap_data->x_axis_sign << 2) & BMA423_X_AXIS_SIGN_MASK;
-				y_axis = (remap_data->y_axis << 3) & BMA423_Y_AXIS_MASK;
-				y_axis_sign = (remap_data->y_axis_sign << 5) & BMA423_Y_AXIS_SIGN_MASK;
-				z_axis = (remap_data->z_axis << 6) & BMA423_Z_AXIS_MASK;
+				x_axis = 0 & BMA423_X_AXIS_MASK;
+				x_axis_sign = (1 << 2) & BMA423_X_AXIS_SIGN_MASK;
+				y_axis = (1 << 3) & BMA423_Y_AXIS_MASK;
+				y_axis_sign = (0 << 5) & BMA423_Y_AXIS_SIGN_MASK;
+				z_axis = (2 << 6) & BMA423_Z_AXIS_MASK;
 				feature_config[index] = x_axis | x_axis_sign | y_axis | y_axis_sign | z_axis;
-				feature_config[index + 1] = remap_data->z_axis_sign & BMA423_Z_AXIS_SIGN_MASK;
+				feature_config[index + 1] = 1 & BMA423_Z_AXIS_SIGN_MASK;
 				rslt |= bma4_write_regs(BMA4_FEATURE_CONFIG_ADDR, feature_config,
 							BMA423_FEATURE_SIZE, dev);
 			}
