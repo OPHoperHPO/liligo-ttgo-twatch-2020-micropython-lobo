@@ -4,6 +4,7 @@
 This is a branch from Lobo fork, I added it to Twatch's hardware driver and the `lvgl` graphics library, thanks to Lobo's clean project (than the official).
 
 ## Add the following drivers
+- [IR](https://github.com/peterhinch/micropython_ir). **Not Tested!** If you test this library, open a new issue and report the results to me.
 - PCF8563 Real-time clock/calendar driver
 - BMA423 Low-g acceleration sensor driver
 - LVGL popular embedded graphics library
