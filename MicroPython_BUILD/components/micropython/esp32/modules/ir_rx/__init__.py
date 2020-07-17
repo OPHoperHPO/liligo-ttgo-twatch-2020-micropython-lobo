@@ -40,7 +40,7 @@ class IR_RX():
         self.verbose = False
 
         self._times = array('i',  (0 for _ in range(nedges + 1)))  # +1 for overrun
-        pin.irq(handler = self._cb_pin, trigger = (Pin.IRQ_FALLING | Pin.IRQ_RISING))
+        pin.init(handler = self._cb_pin, trigger = (Pin.IRQ_FALLING | Pin.IRQ_RISING))
         self.edge = 0
         self.tim = Timer(-1)  # Sofware timer
         self.cb = self.decode
@@ -66,5 +66,5 @@ class IR_RX():
         self._errf = func
 
     def close(self):
-        self._pin.irq(handler = None)
+        self._pin.init(handler = None)
         self.tim.deinit()
