@@ -11,7 +11,23 @@ This is a branch from Lobo fork, I added it to Twatch's hardware driver and the 
 - FT5x/6x touch screen driver (Updated to latest) Use ft5206.FT5206 instead of TouchScreen module
 - AXP202 advanced multi-channel power management chip driver (Updated to latest)
 
-### The following examples have all been tested in T-Watch.
+
+
+### Examples:
+
+#### IR example:
+```
+import time
+from machine import Pin
+from ir_rx.mce import MCE 
+def callback(data, addr, ctrl):
+    if data < 0: 
+        print('Repeat code.')
+    else:
+        print('Data {:02x} Addr {:04x}'.format(data, addr))
+ir = MCE(Pin(13, Pin.IN), callback)        
+
+```
 
 #### BMA423 interrupt example
 ```
