@@ -9,8 +9,6 @@
 - FT5x/6x touch screen driver (Updated to latest) Use ft5206.FT5206 instead of TouchScreen module
 - AXP202 advanced multi-channel power management chip driver (Updated to latest)
 
-
-
 ### Examples:
 
 #### IR example:
