@@ -42,7 +42,7 @@ class IR_RX():
         self._times = array('i',  (0 for _ in range(nedges + 1)))  # +1 for overrun
         pin.init(handler = self._cb_pin, trigger = (Pin.IRQ_FALLING | Pin.IRQ_RISING))
         self.edge = 0
-        self.tim = Timer(11)  # Hardware timer
+        self.tim = Timer(0)  # Hardware timer
         self.cb = self.decode
 
     # Pin interrupt. Save time of each edge for later decode.
