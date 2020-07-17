@@ -92,7 +92,6 @@ class Display:
                  speed=40000000, color_bits=tft.COLOR_BITS16, backl_pin=12, backl_on=1, splash= False)
         self.tft = tft
         self.pmu = pmu
-        self.tft.tft_writecmd(0x21)  # Invert colors
         self.set_backlight_level(0)  # Turn backlight off
         self.backlight_level = 0
         self.backlight(1)  # Enable power on backlight
