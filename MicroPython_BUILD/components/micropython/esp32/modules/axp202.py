@@ -101,6 +101,7 @@ class PMU(object):
     def init_device(self):
         print('* initializing mpu')
         self._chip_id = self.read_byte(AXP202_IC_TYPE)
+        print(self._chip_id, AXP202_CHIP_ID)
         if self._chip_id == AXP202_CHIP_ID:
             self._chip_id = AXP202_CHIP_ID
             print("Detect PMU Type is AXP202")
