@@ -72,7 +72,7 @@ class PMU(object):
 
         self._outputReg = None
         self.buffer = bytearray(16)
-        self.bytebuf = self.buffer
+        self.bytebuf = memoryview(self.buffer[0:1])
         self.wordbuf = memoryview(self.buffer[0:2])
         self._irq = memoryview(self.buffer[0:5])
         self.bus = i2c
@@ -84,10 +84,12 @@ class PMU(object):
         self.bus.writeto_mem(self.address, reg, self.bytebuf)
 
     def read_byte(self, reg, buffer_full=False):
-        self.bus.readfrom_mem_into(self.address, reg, self.bytebuf)
         if buffer_full is True:
-            return self.bytebuf
+            buffer = bytearray(16)
+            self.bus.readfrom_mem_into(self.address, reg, buffer)
+            return buffer
         else:
+            self.bus.readfrom_mem_into(self.address, reg, self.bytebuf)
             return self.bytebuf[0]
 
     def read_word(self, reg):
@@ -101,7 +103,6 @@ class PMU(object):
     def init_device(self):
         print('* initializing mpu')
         self._chip_id = self.read_byte(AXP202_IC_TYPE)
-        print(self._chip_id, AXP202_CHIP_ID)
         if self._chip_id == AXP202_CHIP_ID:
             self._chip_id = AXP202_CHIP_ID
             print("Detect PMU Type is AXP202")
