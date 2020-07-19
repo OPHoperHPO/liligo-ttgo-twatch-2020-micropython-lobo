@@ -28,8 +28,9 @@ Updated by Anodev https://github.com/OPHoperHPO
 '''
 
 import time
-import _thread
+
 from ustruct import unpack
+
 from axp_constants import *
 
 default_pin_scl = 22
@@ -822,7 +823,10 @@ class PMU(object):
             rslt = self._axp202_gpio_3_select(mode)
             if (rslt < 0): return rslt
             val = self.read_byte(AXP202_GPIO3_CTL)
-            val = rslt if rslt == 1(val | BIT_MASK(2)) else (val & (~BIT_MASK(2)))
+            if rslt == 1:
+                val = val | self.__BIT_MASK(2)
+            else:
+                val = val & (~BIT_MASK(2))
             self.write_byte(AXP202_GPIO3_CTL, val)
             return AXP_PASS
 
@@ -847,7 +851,10 @@ class PMU(object):
             gpio == AXP_GPIO_3: AXP202_GPIO3_CTL,
         }[True]
         val = self.read_byte(reg)
-        val = mask if mask == 0(val & 0b00111111) else (val | mask)
+        if mask == 0:
+            val = (val & 0b00111111)
+        else:
+            val = val | mask
         self.write_byte(reg, val)
         return AXP_PASS
 
