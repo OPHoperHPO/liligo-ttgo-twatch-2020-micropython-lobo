@@ -14,7 +14,7 @@ from machine import Pin, I2C, PWM
 
 class TTGO:
     def __init__(self):
-        self.__i2c__ = I2C(scl=22, sda=21, speed=400000)
+        self.__i2c__ = I2C(scl=22, sda=21)
         self.pmu = axp202.PMU(self.__i2c__)
         self.init_power()
         self.rtc = PCF8563(self.__i2c__)
