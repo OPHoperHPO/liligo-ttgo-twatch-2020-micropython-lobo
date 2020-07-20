@@ -5,14 +5,13 @@
 
 #include "py/obj.h"
 #include "py/runtime.h"
-#include "py/binary.h"
 #include "libs/lvgl/lv_binding/lvgl/lvgl.h"
 #include "freertos/FreeRTOS.h"
-#include "freertos/timers.h"
+#include "freertos/task.h"
+#include "esp_freertos_hooks.h"
 #include "esp_log.h"
 
 static const char TAG[] = "[LVGL]";
-static TimerHandle_t xTimer;
 
 STATIC mp_obj_t mp_lv_task_handler(mp_obj_t arg)
 {
@@ -22,29 +21,38 @@ STATIC mp_obj_t mp_lv_task_handler(mp_obj_t arg)
 
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(mp_lv_task_handler_obj, mp_lv_task_handler);
 
-static void vTimerCallback(TimerHandle_t pxTimer)
+
+static void lv_task(void* param)
 {
-    lv_tick_inc(portTICK_RATE_MS);
-    mp_sched_schedule((mp_obj_t)&mp_lv_task_handler_obj, mp_const_none,NULL);
+    while(1)
+    {
+        vTaskDelay(5);
+        mp_sched_schedule((mp_obj_t)&mp_lv_task_handler_obj, mp_const_none, NULL);
+    }
 }
 
+
+
+static void lv_tick_task(void)
+{
+    lv_tick_inc(portTICK_RATE_MS);
+}
+
+static TaskHandle_t lvglTaskHandle;
 STATIC mp_obj_t mp_init_lvesp32()
 {
+    BaseType_t xReturned;
+
     lv_init();
 
-    xTimer = xTimerCreate(
-                "lvgl_timer",
-                1,              // The timer period in ticks.
-                pdTRUE,         // The timers will auto-reload themselves when they expire.
-                NULL,           // User data passed to callback
-                vTimerCallback  // Callback function
-            );
+    esp_register_freertos_tick_hook(lv_tick_task);
 
-    if (xTimer == NULL || xTimerStart( xTimer, 0 ) != pdPASS){
-        ESP_LOGE(TAG, "Failed creating or starting LVGL timer!");
-    } 
-
-   return mp_const_none;
+    xReturned = xTaskCreate(lv_task, "LVGL Task", 4096, NULL, 5, &lvglTaskHandle);
+    if (xReturned != pdPASS){
+        vTaskDelete(lvglTaskHandle);
+        ESP_LOGE(TAG, "Failed creating LVGL task!");
+    }
+    return mp_const_none;
 }
 
 STATIC MP_DEFINE_CONST_FUN_OBJ_0(mp_init_lvesp32_obj, mp_init_lvesp32);
@@ -54,7 +62,6 @@ STATIC const mp_rom_map_elem_t lvesp32_globals_table[] = {
         { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_lvesp32) },
         { MP_ROM_QSTR(MP_QSTR___init__), MP_ROM_PTR(&mp_init_lvesp32_obj) },
 };
-         
 
 STATIC MP_DEFINE_CONST_DICT (
     mp_module_lvesp32_globals,

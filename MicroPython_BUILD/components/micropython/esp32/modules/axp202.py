@@ -26,7 +26,6 @@ Created by Lewis he on June 24, 2019.
 github:https://github.com/lewisxhe/AXP202X_Libraries
 Updated by Anodev https://github.com/OPHoperHPO
 '''
-
 import time
 
 from ustruct import unpack
@@ -78,7 +77,6 @@ class PMU(object):
         self._irq = memoryview(self.buffer[0:5])
         self.bus = i2c
         self.init_device()
-        self.threadIRQupdate = None
 
     def write_byte(self, reg, val):
         self.bytebuf[0] = val

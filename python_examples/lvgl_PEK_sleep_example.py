@@ -1,16 +1,12 @@
-import time
-import ttgo
 import lvgl as lv
 import machine
 
+import ttgo
+
+
 def axp_callback(pin):
     power.clearIRQ()
-    for i in reversed(range(5, 0)):
-        text_label.set_text("Go to sleep after {} seconds".format(i))
-        time.sleep(1)
-        tft.clear()
-    text_label.set_text("Sleep now...")
-    time.sleep(2)
+    print("PEK was pressed! Go to sleep!!!!")
     watch.tft.backlight_fade(0)
     watch.tft.display_sleep()
     watch.power_off()
@@ -19,27 +15,31 @@ def axp_callback(pin):
     power.clearIRQ()
     machine.deepsleep()
 
-rtc = machine.RTC()
+
+# Init watch
 watch = ttgo.TTGO()
 
+power = watch.pmu
+tft = watch.tft
+
+rtc = machine.RTC()  # Init micropython RTC module
+
+# Init lvgl
+lv.init()
 watch.lvgl_begin()
 
+# Init interface
 scr = lv.obj()
 win = lv.win(scr)
 win.set_title("PowerKey Sleep Example")
 text_label = lv.label(win)
-text_label.set_text("Wait for the PEKKey interrupt to come...")
-
-watch.tft.backlight_fade(100)
-
-tft = watch.tft.tft
-power = watch.pmu
-
-watch.pmu_attach_interrupt(axp_callback)
-power.enableIRQ(ttgo.axp202.AXP202_PEK_SHORTPRESS_IRQ, True)
-
+text_label.set_text("Wait for the PEKKey\n interrupt to come...")
 lv.scr_load(scr)
 
-while True:
-    power.clearIRQ()
+# Init irq
+watch.pmu_attach_interrupt(axp_callback)
+power.enableIRQ(ttgo.axp202.AXP202_PEK_SHORTPRESS_IRQ, True)
+power.clearIRQ()
 
+# Enable backlight
+watch.tft.backlight_fade(100)

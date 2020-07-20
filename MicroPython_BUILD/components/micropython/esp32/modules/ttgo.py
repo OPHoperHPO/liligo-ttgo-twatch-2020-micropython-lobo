@@ -1,28 +1,29 @@
 # -*- coding: utf-8 -*-
 # Порт официальной библиотеки ttgo для часов LilyGo TTGO T-Watch 2020.
 # Автор: Nikita Selin (Anodev)[https://github.com/OPHoperHPO]
+import gc
 import lvgl as lv
-import lvgl_helper as lv_h
-import lvesp32
 import display
 from ft5206 import FT5206
 import bma423 as BMA423
 from pcf8563 import PCF8563
 import axp202
-from machine import Pin, I2C, PWM
+import lvgl_helper as lv_h
+from machine import Pin, I2C, PWM, Timer
 
 
 class TTGO:
     def __init__(self):
         self.__i2c__ = I2C(scl=22, sda=21)
+        self.__i2c2__ = I2C(id=1, scl=32, sda=23, speed=400000)
         self.pmu = axp202.PMU(self.__i2c__)
         self.init_power()
-        self.rtc = PCF8563(self.__i2c__)
         self.tft = self.__init_display__()
-        self.bma = self.__init_bma__()
-        self.__i2c2__ = I2C(id=1, scl=32, sda=23, speed=400000)
         self.touch = FT5206(self.__i2c2__)
         self.motor = Motor()
+        self.rtc = PCF8563(self.__i2c__)
+        self.bma = self.__init_bma__()
+        self.ticker = Ticker()
 
     def __init_bma__(self):
         BMA423.init(self.__i2c__)
@@ -31,14 +32,20 @@ class TTGO:
     def __init_display__(self):
         return Display(self.pmu)
 
-    def pmu_attach_interrupt(self, callback):
+    @staticmethod
+    def pmu_attach_interrupt(callback):
         irq = Pin(35, mode=Pin.IN, handler=callback, trigger=Pin.IRQ_FALLING)
+        return irq
 
-    def bma_attach_interrupt(self, callback):
+    @staticmethod
+    def bma_attach_interrupt(callback):
         irq = Pin(39, mode=Pin.IN, handler=callback, trigger=Pin.IRQ_RISING)
+        return irq
 
-    def rtc_attach_interrupt(self, rtc_callback):
-        Pin(37, mode=Pin.IN, handler=rtc_callback, trigger=Pin.IRQ_FALLING)
+    @staticmethod
+    def rtc_attach_interrupt(rtc_callback):
+        irq = Pin(37, mode=Pin.IN, handler=rtc_callback, trigger=Pin.IRQ_FALLING)
+        return irq
 
     def enable_audio_power(self, en=True):
         self.pmu.setLDO3Mode(1)
@@ -46,21 +53,22 @@ class TTGO:
 
     def lvgl_begin(self):
         lv.init()
+        self.ticker.init()
         disp_buf1 = lv.disp_buf_t()
         buf1_1 = bytes(240 * 10)
-        lv.disp_buf_init(disp_buf1, buf1_1, None, len(buf1_1) // 4)
+        disp_buf1.init(buf1_1, None, len(buf1_1) // 4)
         disp_drv = lv.disp_drv_t()
-        lv.disp_drv_init(disp_drv)
+        disp_drv.init()
         disp_drv.buffer = disp_buf1
         disp_drv.flush_cb = lv_h.flush
         disp_drv.hor_res = 240
         disp_drv.ver_res = 240
-        lv.disp_drv_register(disp_drv)
+        disp_drv.register()
         indev_drv = lv.indev_drv_t()
-        lv.indev_drv_init(indev_drv)
+        indev_drv.init()
         indev_drv.type = lv.INDEV_TYPE.POINTER
         indev_drv.read_cb = self.touch.lvgl_touch_read
-        lv.indev_drv_register(indev_drv)
+        indev_drv.register()
 
     def init_power(self):
         # Change the button boot time to 4 seconds
@@ -89,7 +97,7 @@ class Display:
         tft = display.TFT()
         tft.init(tft.ST7789, width=240, invrot=3,
                  rot=1, bgr=False, height=240, miso=2, mosi=19, clk=18, cs=5, dc=27,
-                 speed=40000000, color_bits=tft.COLOR_BITS16, backl_pin=12, backl_on=1, splash= False)
+                 speed=40000000, color_bits=tft.COLOR_BITS16, backl_pin=12, backl_on=1, splash=False)
         self.tft = tft
         self.pmu = pmu
         self.set_backlight_level(0)  # Turn backlight off
@@ -155,6 +163,38 @@ class Display:
 
     def __rgb_tuple2rgb_int__(self, rgb_tuple):
         return rgb_tuple[0] << 16 | rgb_tuple[1] << 8 | rgb_tuple[2]
+
+
+class Ticker:
+    def __init__(self):
+        lv.init()
+        self.timer = Timer(1)
+        self.period = 15
+
+    def __cb__(self, timer):
+        lv.tick_inc(self.period)
+        lv.task_handler()
+
+    def init(self):
+        self.timer.init(period=self.period, mode=self.timer.PERIODIC, callback=self.__cb__)
+
+    def set_period(self, data=None):
+        if data:
+            self.period = int(data)
+            self.timer.period(int(data))
+        else:
+            return self.period
+
+    def resume(self):
+        self.timer.resume()
+
+    def pause(self):
+        if self.timer.isrunning():
+            self.timer.pause()
+
+    def deinit(self):
+        if self.timer.isrunning():
+            self.timer.deinit()
 
 
 class Motor:
