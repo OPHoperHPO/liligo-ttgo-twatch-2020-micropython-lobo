@@ -1,6 +1,7 @@
 
 # MicroPython for LilyGO TTGO T-Watch-2020 ![Build firmware](https://github.com/OPHoperHPO/lilygo-ttgo-twatch-2020-micropython-lobo/workflows/Build%20firmware/badge.svg)
 ### While under development!
+## [Download firmware image](https://github.com/OPHoperHPO/lilygo-ttgo-twatch-2020-micropython-lobo/releases)
 ## Add the following drivers
 - [IR](https://github.com/peterhinch/micropython_ir). **Not Tested!** If you test this library, open a new issue and report the results to me.
 - PCF8563 Real-time clock/calendar driver
