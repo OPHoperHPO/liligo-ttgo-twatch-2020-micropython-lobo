@@ -1,6 +1,7 @@
 
 # MicroPython for LilyGO TTGO T-Watch-2020 ![Build firmware](https://github.com/OPHoperHPO/lilygo-ttgo-twatch-2020-micropython-lobo/workflows/Build%20firmware/badge.svg)
 ### While under development!
+### UPD 22.07.2020. Deprecated. Wait for a new version of micropython for this watch based on the main micropython branch.
 ## [Download firmware image](https://github.com/OPHoperHPO/lilygo-ttgo-twatch-2020-micropython-lobo/releases)
 ## Add the following drivers
 - [IR](https://github.com/peterhinch/micropython_ir). **Not Tested!** If you test this library, open a new issue and report the results to me.
